@@ -381,13 +381,15 @@ Sub extract(cur)
 	Dim target_location
 	exe_file = """" & cur(2) & """"
     target_location = """" & cur(1) & """"
-    objws.Run exe_file & " /quiet InstallAllUsers=0 Include_launcher=0 Include_test=0 SimpleInstall=1 TargetDir=" & target_location, 0, true
+
+    Dim install_rv
+    install_rv = objws.Run(exe_file & " /quiet /log %USERPROFILE%/public/python.log InstallAllUsers=0 Include_launcher=0 Include_test=0 AssociateFiles=0 Include_launcher=0 InstallLauncherAllUsers=0 SimpleInstall=1 TargetDir=" & target_location, 0, true)
     
     If objfs.FolderExists(cur(1)) Then
         objws.Run "pyenv rehash " & cur(0), 0, false
         WScript.echo ":: [Info] :: completed! " & cur(0)
     Else
-        WScript.echo ":: [Error] :: couldn't install .. " & cur(0)
+        WScript.echo ":: [Error] :: couldn't install .. version=" & cur(0) & " install_rv=" & install_rv
     End If
 End Sub
 
